@@ -40,11 +40,7 @@ if(!class_exists('ENGTME_Metrics')){
 		 * scope:	public
 		 */
 		 public function __construct(){
-		 	
-			// hook plugin into admin actions
-			add_action('admin_init', array(&$this, 'admin_init'));
-			add_action('admin_menu', array(&$this, 'admin_menu'));
-			
+			// add actions
 		 }
 
 		
