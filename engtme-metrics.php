@@ -10,7 +10,7 @@
  * Author URI: http://github.com/jbalthis
  * 
  * License: GPL2
- * Copyright 2012 Jason Balthis (email:jabalthi@cyberspace.ninja)
+ * Copyright 2014 Jason Balthis (email:jabalthi@cyberspace.ninja)
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License, version 2, as
@@ -40,7 +40,18 @@ if(!class_exists('ENGTME_Metrics')){
 		 * scope:	public
 		 */
 		 public function __construct(){
-			// add actions
+				
+			// Initialize Settings
+			require_once(sprintf("%s/engtme-metrics-settings.php", dirname(__FILE__)));
+			$ENGTME_Metrics_Settings = new ENGTME_Metrics_Settings();
+			
+			// Register custom post types
+			require_once(sprintf("%s/post-types/post_type_template.php", dirname(__FILE__)));
+			$Post_Type_Template = new Post_Type_Template();
+			
+			
+			$plugin = plugin_basename(__FILE__);
+			add_filter("plugin_action_links_$plugin", array( $this, 'plugin_settings_link' ));
 		 }
 
 		
@@ -67,6 +78,15 @@ if(!class_exists('ENGTME_Metrics')){
 			
 			// do nothing
 			
+		}
+		
+		
+		// Add the settings link to the plugins page
+		function plugin_settings_link($links){
+		
+			$settings_link = '<a href="options-general.php?page=engtme_metrics">Settings</a>';
+			array_unshift($links, $settings_link);
+			return $links;
 		}
 		
 	} // end class
