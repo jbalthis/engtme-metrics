@@ -2,7 +2,7 @@
 // block direct access to plugin PHP files
 defined('ABSPATH') or die('No script kitties please, meooooow ;P');
 
-if(!class_exists('ENGTME_Metrics')){
+if(!class_exists('ENGTME_Metrics_Settings')){
 	
 	class ENGTME_Metrics_Settings
 	{

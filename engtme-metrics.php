@@ -46,7 +46,7 @@ if(!class_exists('ENGTME_Metrics')){
 			$ENGTME_Metrics_Settings = new ENGTME_Metrics_Settings();
 			
 			// Register custom post types
-			require_once(sprintf("%s/post-types/post_type_template.php", dirname(__FILE__)));
+			require_once(sprintf("%s/post-types/engtme-metrics-post-type-template.php", dirname(__FILE__)));
 			$Post_Type_Template = new Post_Type_Template();
 			
 			
