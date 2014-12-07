@@ -45,6 +45,10 @@ if(!class_exists('ENGTME_Metrics')){
 			require_once(sprintf("%s/engtme-metrics-settings.php", dirname(__FILE__)));
 			$ENGTME_Metrics_Settings = new ENGTME_Metrics_Settings();
 			
+			// Initialize OWA
+			require_once(sprintf("%s/engtme-metrics-owa.php", dirname(__FILE__)));
+			$ENGTME_Metrics_OWA = new ENGTME_Metrics_OWA();
+			
 			// Register custom post types
 			require_once(sprintf("%s/post-types/engtme-metrics-post-type-template.php", dirname(__FILE__)));
 			$Post_Type_Template = new Post_Type_Template();
@@ -63,20 +67,78 @@ if(!class_exists('ENGTME_Metrics')){
 		 */	
 		 public static function activate(){
 		 	
-			// do nothing
+			$engtme_metrics_db_version = '1.0';
+			
+			// create table to store metrics data
+			call_user_func(function(){
+   				global $wpdb;
+
+   				$table_name = $wpdb->prefix . 'engtme_metrics';
+				
+				$charset_collate = $wpdb->get_charset_collate();
+				
+				$sql = "CREATE TABLE $table_name (
+				  id mediumint(9) NOT NULL AUTO_INCREMENT,
+				  ip INTEGER UNSIGNED NOT NULL,
+				  time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+				  ua varchar(200) NOT NULL DEFAULT '-',
+				  request varchar(200) NOT NULL DEFAULT '/',
+				  referrer varchar(200) NOT NULL DEFAULT '-',
+				  is_unique BOOLEAN NOT NULL DEFAULT TRUE,
+				  UNIQUE KEY id (id)
+				) $charset_collate;";
+				
+				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+				dbDelta( $sql ); 
+				
+				add_option( 'engtme_metrics_db_version', $engtme_metrics_db_version );
+				
+			}) or die('Could not create table for plugin data');
+			
+			
+			// install sample data
+			call_user_func(function(){
+				global $wpdb;
+								
+				$table_name = $wpdb->prefix . 'engtme_metrics';
+				
+				$wpdb->insert( 
+					$table_name, 
+					array( 
+						'time' => current_time( 'mysql' ),
+						'ip' => $_SERVER['REMOTE_ADDR'],
+						'ua' => $_SERVER['HTTP_USER_AGENT'],
+						'referrer' => $_SERVER['HTTP_REFERER'],
+					)
+				);
+			}) or die('Could not insert sample data into table');
+
 			
 		 }
+		 
 	
 		
 		/**
 		 * name:	deactivate()
-		 * desc:	deactivation method for the plugin object
+		 * desc:	method to handle tasks to run when plugin is deactivated
 		 * scope:	public
 		 * attr:	static
 		 */
 		public static function deactivate(){
-			
-			// do nothing
+					
+				
+			// delete database upon plugin uninstallation
+			call_user_func(function(){
+			     global $wpdb;
+				 
+			     $table_name = $wpdb->prefix . 'engtme_metrics';
+				 
+			     $sql = "DROP TABLE IF EXISTS $table_name;";
+			     $wpdb->query($sql);
+				 
+			     delete_option('engtme_metrics_db_version');
+			}) or die('Could not remove plugin table from db');
+
 			
 		}
 		

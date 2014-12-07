@@ -68,7 +68,7 @@ if(!class_exists('ENGTME_Metrics_Settings')){
 		 public function settings_section_engtme_metrics(){
 		 	
 			// Think of this as help text for the section.
-			echo 'These settings do things for the WP Plugin Template.';
+			echo 'These settings control the behavior and appearance of the ENGTME Metrics plugin.';
 		}
 		
 		

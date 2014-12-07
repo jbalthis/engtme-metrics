@@ -12,9 +12,9 @@ if(!class_exists('Post_Type_Template')){
 		const POST_TYPE	= "post-type-template";
 		
 		private $_meta	= array(
-		'meta_a',
-		'meta_b',
-		'meta_c',
+			'meta_a',
+			'meta_b',
+			'meta_c',
 		);
 
 		
